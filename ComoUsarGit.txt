@@ -1,0 +1,29 @@
+# los <> no se escriben, son para que pongas tu variable
+
+// Para tener el repositorio de forma local
+git clone <esteRepositorio>
+
+// Luego dentro del proyecto, sera necesario separar los codigos por ramas para cada desarrollador
+// Para crear una rama dentro del repositorio
+git branch dev-<tuNombre>
+
+// Para elegir una rama en especifico
+git checkout <nombreRama>
+
+// Para ver el estado de los archivos
+git status
+
+// Para añadir archivos
+git add .  // Para todos
+git add "nombreArchivo" // Para un archivo en especifico
+
+// Para remover un archivo 
+git reset .
+git reset "nombreArchivo"
+
+// Para hacer una captura en el tiempo de los archivos añadidos
+git commit -m "tituloDeLaCaptura"
+
+// Para subirlos a tu rama
+git push --set-upstream origin <nombreRama>
+
