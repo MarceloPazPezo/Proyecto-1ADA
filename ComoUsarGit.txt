@@ -27,3 +27,5 @@ git commit -m "tituloDeLaCaptura"
 // Para subirlos a tu rama
 git push --set-upstream origin <nombreRama>
 
+// Actualizar archivos de una rama remota
+git pull // Usar siempre con la rama main
