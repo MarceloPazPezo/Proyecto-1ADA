@@ -9,7 +9,40 @@
 using namespace std;
 using namespace chrono;
 // Variables modificables
-int n = 8, muestras = 1;
+const int MAXIMO = 128;
+int n = 2, muestras = 3;
+
+/**
+ * La función "mostrarmatrizint" imprime una matriz byte por consola.
+ *
+ * @param M El parámetro `M` es un puntero a un puntero a un byte. Representa una matriz 
+ * bidimensional de bytes.
+ */
+void mostrarMatrizByte(byte **M) {
+    for (int i = 0; i < n; i++) {
+        cout << "[";
+        for (int j = 0; j < n; j++) {
+            cout << static_cast<int>(M[i][j]) << " ";
+        }
+        cout << "]" << endl;
+    }
+}
+
+/**
+ * La función "mostrarmatrizint" imprime una matriz entera por consola.
+ *
+ * @param M El parámetro `M` es un puntero a un puntero a un entero.Representa una matriz 
+ * bidimensional de enteros.
+ */
+void mostrarMatrizInt(int **M) {
+    for (int i = 0; i < n; i++) {
+        cout << "[";
+        for (int j = 0; j < n; j++) {
+            cout << M[i][j] << " ";
+        }
+        cout << "]" << endl;
+    }
+}
 
 /**
  * La función algoritmotradicional realiza la multiplicación de la matriz utilizando un 3 for anidados.
@@ -102,83 +135,80 @@ int** sumarMatrices(int** M1, int** M2, int n) {
  * @param tamaño El "tamaño" del parámetro representa el tamaño de las matrices.Indica el número de
  * Filas y columnas en las matrices "A", "B" y "C".
  */
-void DR1(byte **a, byte **b, int **c, int row, int col, int size) {
-    if (size == 2) {
-        c[row][col] += static_cast<int>(a[row][col]) * static_cast<int>(b[row][col]);
-    } else {
-        int newSize = size / 2;
-        for (int i = 0; i < newSize; i++) {
-            for (int j = 0; j < newSize; j++) {
-                DR1(a, b, c, row + i, col + j, newSize);
-                DR1(a, b, c, row + i, col + newSize + j, newSize);
-                DR1(a, b, c, row + newSize + i, col + j, newSize);
-                DR1(a, b, c, row + newSize + i, col + newSize + j, newSize);
-            }
-        }
-    }
-}
+// void DR1(byte **A, byte **B, int **C, int row, int col, int size) {
+//     if (size == 2) {
+//         C[row][col] += static_cast<int>(A[row][col]) * static_cast<int>(B[row][col]);
+//         C[row][col+1] += static_cast<int>(A[row][col+1]) * static_cast<int>(B[row+1][col+1]);
+//         C[row+1][col] += static_cast<int>(A[row+1][col]) * static_cast<int>(B[row+1][col]);
+//         C[row+1][col+1] += static_cast<int>(A[row+1][col]) * static_cast<int>(B[row+1][col+1]);
+//     } else {
+//         int newSize = size / 2;
+//         for (int i = 0; i < newSize; i++) {
+//             for (int j = 0; j < newSize; j++) {
+//                 DR1(A, B, C, row + i, col + j, newSize);
+//                 DR1(A, B, C, row + i, col + newSize + j, newSize);
+//                 DR1(A, B, C, row + newSize + i, col + j, newSize);
+//                 DR1(A, B, C, row + newSize + i, col + newSize + j, newSize);
+//             }
+//         }
+//     }
+// }
 
-void DR1mod(byte **A, byte **B, int **C, int row, int col, int size) {
+// void DR1mod(byte **A, byte **B, int **C, int row, int col, int size) {
     
-    if (size == 2)
-    {
-        C1 = static_cast<int>(A[0][0]) * static_cast<int>(B[0][0]) + static_cast<int>(A[0][1]) * static_cast<int>(B[1][0]);
-        c2 = A[0][0] * B[0][1] + A[0][1] * B[1][1]
-        c3 = A[1][0] * B[0][0] + A[1][1] * B[1][0]
-        c4 = A[1][0] * B[0][1] + A[1][1] * B[1][1]
-        return [[c1, c2], [c3, c4]]
-    }
-    else
-    {
-        int half = size / 2;
-        byte ** A11, A12, A21, A22;
-        dividirMatriz(A, half, A11, A12, A21, A22);
-        B11, B12, B21, B22 = split_matrix(B, half)
+//     if (size == 2)
+//     {
+//         C1 = static_cast<int>(A[0][0]) * static_cast<int>(B[0][0]) + static_cast<int>(A[0][1]) * static_cast<int>(B[1][0]);
+//         c2 = A[0][0] * B[0][1] + A[0][1] * B[1][1]
+//         c3 = A[1][0] * B[0][0] + A[1][1] * B[1][0]
+//         c4 = A[1][0] * B[0][1] + A[1][1] * B[1][1]
+//         return [[c1, c2], [c3, c4]]
+//     }
+//     else
+//     {
+//         int half = size / 2;
+//         byte ** A11, A12, A21, A22;
+//         dividirMatriz(A, half, A11, A12, A21, A22);
+//         B11, B12, B21, B22 = split_matrix(B, half)
         
-        C11 = add_matrices(multiply_matrices(A11, B11), multiply_matrices(A12, B21))
-        C12 = add_matrices(multiply_matrices(A11, B12), multiply_matrices(A12, B22))
-        C21 = add_matrices(multiply_matrices(A21, B11), multiply_matrices(A22, B21))
-        C22 = add_matrices(multiply_matrices(A21, B12), multiply_matrices(A22, B22))
+//         C11 = add_matrices(multiply_matrices(A11, B11), multiply_matrices(A12, B21))
+//         C12 = add_matrices(multiply_matrices(A11, B12), multiply_matrices(A12, B22))
+//         C21 = add_matrices(multiply_matrices(A21, B11), multiply_matrices(A22, B21))
+//         C22 = add_matrices(multiply_matrices(A21, B12), multiply_matrices(A22, B22))
         
-        return combine_matrices(C11, C12, C21, C22)
-    }
-    if (size == 2) {
-        c[row][col] += static_cast<int>(a[row][col]) * static_cast<int>(b[row][col]);
-    } else {
-        int newSize = size / 2;
-        for (int i = 0; i < newSize; i++) {
-            for (int j = 0; j < newSize; j++) {
-                DR1(a, b, c, row + i, col + j, newSize);
-                DR1(a, b, c, row + i, col + newSize + j, newSize);
-                DR1(a, b, c, row + newSize + i, col + j, newSize);
-                DR1(a, b, c, row + newSize + i, col + newSize + j, newSize);
-            }
-        }
-    }
-}
+//         return combine_matrices(C11, C12, C21, C22)
+//     }
+//     if (size == 2) {
+//         c[row][col] += static_cast<int>(a[row][col]) * static_cast<int>(b[row][col]);
+//     } else {
+//         int newSize = size / 2;
+//         for (int i = 0; i < newSize; i++) {
+//             for (int j = 0; j < newSize; j++) {
+//                 DR1(a, b, c, row + i, col + j, newSize);
+//                 DR1(a, b, c, row + i, col + newSize + j, newSize);
+//                 DR1(a, b, c, row + newSize + i, col + j, newSize);
+//                 DR1(a, b, c, row + newSize + i, col + newSize + j, newSize);
+//             }
+//         }
+//     }
+// }
 
-void DR2(byte **a, byte **b, int **c, int row, int col, int size) {
-    if (size == 2) {
-        c[row][col] += static_cast<int>(a[row][col]) * static_cast<int>(b[row][col]);
-    } else {
-        int newSize = size / 2;
-        for (int i = 0; i < newSize; i++) {
-            for (int j = 0; j < newSize; j++) {
-                DR1(a, b, c, row + i, col + j, newSize);
-                DR1(a, b, c, row + i, col + newSize + j, newSize);
-                DR1(a, b, c, row + newSize + i, col + j, newSize);
-                DR1(a, b, c, row + newSize + i, col + newSize + j, newSize);
-            }
-        }
-    }
-}
-
-int main() {
-    srand(time(NULL));
-    // Crear matrices aleatorias
-    byte **A = new byte*[n];
-    byte **B = new byte*[n];
-    int **C = new int*[n];
+// void DR2(byte **a, byte **b, int **c, int row, int col, int size) {
+//     if (size == 2) {
+//         c[row][col] += static_cast<int>(a[row][col]) * static_cast<int>(b[row][col]);
+//     } else {
+//         int newSize = size / 2;
+//         for (int i = 0; i < newSize; i++) {
+//             for (int j = 0; j < newSize; j++) {
+//                 DR1(a, b, c, row + i, col + j, newSize);
+//                 DR1(a, b, c, row + i, col + newSize + j, newSize);
+//                 DR1(a, b, c, row + newSize + i, col + j, newSize);
+//                 DR1(a, b, c, row + newSize + i, col + newSize + j, newSize);
+//             }
+//         }
+//     }
+// }
+void llenarMatricesRandom(byte ** A, byte **B, int **C, int n) {
     for (int i = 0; i < n; i++) {
         A[i] = new byte[n];
         B[i] = new byte[n];
@@ -189,23 +219,40 @@ int main() {
             C[i][j] = 0;
         }
     }
+
+}
+int main() {
+    srand(time(NULL));
+    // Crear matrices aleatorias
     int menu = 0;
+    byte **A = new byte*[n];
+    byte **B = new byte*[n];
+    int **C = new int*[n];
+
     cout << "Ingrese el algoritmo que desea ejecutar: " << endl;
     cout << "1. Algoritmo Tradicional" << endl;
     cout << "2. DR1" << endl;
     cout << "3. DR2" << endl;
+    cout << ">>> ";
     cin >> menu;
     switch (menu)
     {
         case 1:
             // Cantidad de muestras a tomar
             for (int a = 0; a < muestras; a++) {
+                llenarMatricesRandom(A,B,C,n);
+
                 auto inicio = high_resolution_clock::now();     // Tiempo inicial
                 
                 AlgoritmoTradicional(A, B, C, n);
 
                 auto fin = high_resolution_clock::now();    // Tiempo final
-
+                mostrarMatrizByte(A);
+                cout << "x" << endl;
+                mostrarMatrizByte(B);
+                cout << "=" << endl;
+                mostrarMatrizInt(C);
+                cout << endl;
                 // Calcular tiempo y transformarlo a minutos, segundos y nanosegundos
                 long long nanosegundos = duration_cast<nanoseconds>(fin - inicio).count();
 
@@ -213,7 +260,7 @@ int main() {
                 nanosegundos -= segundos * 1e9;
 
                 // Guardar datos en archivo .txt
-                ofstream archivo("tiempos.txt", ios::app);
+                ofstream archivo("t.txt", ios::app);
                 if (archivo.is_open()) {
                     archivo << n << "," << segundos << "," << nanosegundos << "," << "AT" << endl;
                     archivo.close();
@@ -230,7 +277,11 @@ int main() {
                 DR1(A, B, C, 0, 0, n);
 
                 auto fin = high_resolution_clock::now();    // Tiempo final
-
+                mostrarMatrizByte(A);
+                cout << "x" << endl;
+                mostrarMatrizByte(B);
+                cout << "=" << endl;
+                mostrarMatrizInt(C);
                 // Calcular tiempo y transformarlo a minutos, segundos y nanosegundos
                 long long nanosegundos = duration_cast<nanoseconds>(fin - inicio).count();
 
@@ -254,7 +305,7 @@ int main() {
                 auto inicio = high_resolution_clock::now();     // Tiempo inicial
                 
                 // Algoritmo de Strassen
-                DR2(A, B, C, 0, 0, n);
+                // DR2(A, B, C, 0, 0, n);
 
                 auto fin = high_resolution_clock::now();    // Tiempo final
 
