@@ -112,20 +112,20 @@ void multiplicarMatrices(int **A, int **B, int **C, int n) {
         }
 
         for (int i = 0; i < m; i++) {
-            free(A11[i]);
-            free(A12[i]);
-            free(A21[i]);
-            free(A22[i]);
-            free(B11[i]);
-            free(B12[i]);
-            free(B21[i]);
-            free(B22[i]);
-            free(C11[i]);
-            free(C12[i]);
-            free(C21[i]);
-            free(C22[i]);
-            free(Temp1[i]);
-            free(Temp2[i]);
+        free(A11[i]);
+        free(A12[i]);
+        free(A21[i]);
+        free(A22[i]);
+        free(B11[i]);
+        free(B12[i]);
+        free(B21[i]);
+        free(B22[i]);
+        free(C11[i]);
+        free(C12[i]);
+        free(C21[i]);
+        free(C22[i]);
+        free(Temp1[i]);
+        free(Temp2[i]);
         }
         free(A11);
         free(A12);
@@ -148,61 +148,44 @@ int main() {
     
     clock_t start, end;
     double tiempo;
-    int sizeMatriz = 32;
 
-    do
-    {  
-        double promedio = 0;
-        int rep = 5;
+    int sizeMatriz = 4096;// no llega a 512 lpm FIXME:
 
-        // do
-        // {
-            
-            int **Matriz1 = (int **)malloc(sizeMatriz * sizeof(int *));
-            int **Matriz2 = (int **)malloc(sizeMatriz * sizeof(int *));
-            int **Matriz3 = (int **)malloc(sizeMatriz * sizeof(int *));
+    int **Matriz1 = (int **)malloc(sizeMatriz * sizeof(int *));
+    int **Matriz2 = (int **)malloc(sizeMatriz * sizeof(int *));
+    int **Matriz3 = (int **)malloc(sizeMatriz * sizeof(int *));
 
-            for (int i = 0; i < sizeMatriz; i++) {
-                Matriz1[i] = (int *)malloc(sizeMatriz * sizeof(int));
-                Matriz2[i] = (int *)malloc(sizeMatriz * sizeof(int));
-                Matriz3[i] = (int *)malloc(sizeMatriz * sizeof(int));
-            }
+    for (int i = 0; i < sizeMatriz; i++) {
+        Matriz1[i] = (int *)malloc(sizeMatriz * sizeof(int));
+        Matriz2[i] = (int *)malloc(sizeMatriz * sizeof(int));
+        Matriz3[i] = (int *)malloc(sizeMatriz * sizeof(int));
+    }
 
-            // Inicializar Matriz1 y Matriz2 con valores aleatorios
-            for (int i = 0; i < sizeMatriz; i++) {
-                for (int j = 0; j < sizeMatriz; j++) {
-                    Matriz1[i][j] = rand() % 128 + 0;
-                    Matriz2[i][j] = rand() % 128 + 0;
-                }
-            }
+    // Inicializar Matriz1 y Matriz2 con valores aleatorios
+    for (int i = 0; i < sizeMatriz; i++) {
+        for (int j = 0; j < sizeMatriz; j++) {
+            Matriz1[i][j] = rand() % 128 + 0;
+            Matriz2[i][j] = rand() % 128 + 0;
+        }
+    }
 
-            start = clock();
-            // Multiplicar las matrices
-            multiplicarMatrices(Matriz1, Matriz2, Matriz3, sizeMatriz);
-            end = clock();
+    start = clock();
+    // Multiplicar las matrices
+    multiplicarMatrices(Matriz1, Matriz2, Matriz3, sizeMatriz);
+    end = clock();
 
-            tiempo = ((double) (end - start)) / CLOCKS_PER_SEC;
-            
+    tiempo = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("Tiempo promedio multiplicacion matrices [%d x %d] = {%.2f minutos}|{%f segundos}|{%f milisegundos}\n", sizeMatriz,sizeMatriz,(tiempo/10)/60,tiempo/10,(tiempo/10)*1000);
 
-            // Liberar la memoria de las matrices
-            for (int i = 0; i < sizeMatriz; i++) {
-                free(Matriz1[i]);
-                free(Matriz2[i]);
-                free(Matriz3[i]);
-            }
-            free(Matriz1);
-            free(Matriz2);
-            free(Matriz3);
-
-            rep = rep - 1;
-            promedio = promedio + tiempo;
-
-        //}while(rep != 0);
-
-        printf("Tiempo promedio multiplicacion matrices [%d x %d] = {%.2f minutos}|{%f segundos}|{%f milisegundos}\n", sizeMatriz,sizeMatriz,(promedio/10)/60,promedio/10,(promedio/10)*1000);
-        sizeMatriz = sizeMatriz*2;
-
-    }while(sizeMatriz <= 1024);
+    // Liberar la memoria de las matrices
+    for (int i = 0; i < sizeMatriz; i++) {
+        free(Matriz1[i]);
+        free(Matriz2[i]);
+        free(Matriz3[i]);
+    }
+    free(Matriz1);
+    free(Matriz2);
+    free(Matriz3);
 
     return 0;
 }
