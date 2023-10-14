@@ -33,10 +33,11 @@ bool compararMatrices(int **A, int **B, int n);
 int main() {
     srand(static_cast<unsigned int>(time(NULL)));
     // Crear matrices aleatorias
-    int menu = 0, n;
+    int menu = 0, n = 0;
     cout << "Ingrese N: " << endl;
     cout << ">>> ";
     cin >> n;
+    cout << " " << endl;
 
     byte **A = new byte*[n];
     byte **B = new byte*[n];
@@ -47,10 +48,12 @@ int main() {
     cout << "1. Algoritmo Tradicional" << endl;
     cout << "2. DR1" << endl;
     cout << "3. DR2" << endl;
-    cout << "4. Algoritmo Tradicional Ale comparacion con tradicional" << endl;
-    cout << "5. Algoritmo Tradicional comparacion con DR1" << endl;
+    cout << "4. Comparar matrices" << endl;
+    cout << "5. Algoritmo Tradicional Ale comparacion con tradicional" << endl;
+    cout << "6. Algoritmo Tradicional comparacion con DR1" << endl;
     cout << ">>> ";
     cin >> menu;
+    cout << " " << endl;
     switch (menu)
     {
         case 1:
@@ -117,7 +120,6 @@ int main() {
                     cout << "No se pudo abrir el archivo" << endl;
                 }
             }
-            cout << "FIN DE ALGORITMO" << endl;
             break;
         
         case 3:
@@ -148,12 +150,108 @@ int main() {
                 }
             }
             break;
+        
         case 4:
+            for (int a = 0; a < muestras; a++) {
+                int opc1 = 0, opc2 = 0;
+                do {
+                    cout << "Que algoritmo desea comparar: " << endl;
+                    cout << "1. Algoritmo Tradicional" << endl;
+                    cout << "2. DR1" << endl;
+                    cout << "3. DR2" << endl;
+                    cout << "4. AT Ale" << endl;
+                    cout << "A1>>> ";
+                    cin >> opc1;
+                    cout << "A2>>> ";
+                    cin >> opc2;
+                    if (opc1 == opc2 || opc1 < 1 || opc1 > 4 || opc2 < 1 || opc2 > 4)
+                    {
+                        cout << "Opcion invalida" << endl;
+                    }
+                } while (opc1 == opc2 || opc1 < 1 || opc1 > 4 || opc2 < 1 || opc2 > 4);
+                cout << " " << endl;
+
+                cout << "N: " << n << endl;
+                llenarMatricesRandom(A,B,C,n);
+                llenarMatricesRandom(A,B,AUX,n);
+                
+                auto inicio = high_resolution_clock::now();     // Tiempo inicial
+                
+                if (opc1 == 1)
+                {
+                    AlgoritmoTradicional(A, B, C, n);
+                    cout << "Algoritmo Tradicional" << endl;
+                }
+                else if (opc1 == 2)
+                {
+                    DR1(A, B, C, 0, 0, n);
+                    cout << "DR1" << endl;
+                }
+                else if (opc1 == 3)
+                {
+                    // DR2(A, B, C, 0, 0, n);
+                    cout << "DR2" << endl;
+                }
+                else if (opc1 == 4)
+                {
+                    AlgoritmoTradicionalALE(A, B, C, n);
+                    cout << "AT Ale" << endl;
+                }
+
+                auto fin = high_resolution_clock::now();    // Tiempo final
+
+                // Calcular tiempo y transformarlo a minutos, segundos y nanosegundos
+                long long nanosegundos = duration_cast<nanoseconds>(fin - inicio).count();
+
+                long long segundos = duration_cast<seconds>(nanoseconds(nanosegundos)).count();
+                nanosegundos -= static_cast<long long>(segundos) * static_cast<long long>(1e9);
+                cout << "Tiempo: " << segundos << " segundos y " << nanosegundos << " nanosegundos" << endl;
+
+                inicio = high_resolution_clock::now();     // Tiempo inicial
+
+                if (opc2 == 1)
+                {
+                    AlgoritmoTradicional(A, B, AUX, n);
+                    cout << "Algoritmo Tradicional" << endl;
+                }
+                else if (opc2 == 2)
+                {
+                    DR1(A, B, AUX, 0, 0, n);
+                    cout << "DR1" << endl;
+                }
+                else if (opc2 == 3)
+                {
+                    // DR2(A, B, AUX, 0, 0, n);
+                    cout << "DR2" << endl;
+                }
+                else if (opc2 == 4)
+                {
+                    AlgoritmoTradicionalALE(A, B, AUX, n);
+                    cout << "AT Ale" << endl;
+                }
+
+                fin = high_resolution_clock::now();    // Tiempo final
+
+                // Calcular tiempo y transformarlo a minutos, segundos y nanosegundos
+                nanosegundos = duration_cast<nanoseconds>(fin - inicio).count();
+
+                segundos = duration_cast<seconds>(nanoseconds(nanosegundos)).count();
+                nanosegundos -= static_cast<long long>(segundos) * static_cast<long long>(1e9);
+                cout << "Tiempo: " << segundos << " segundos y " << nanosegundos << " nanosegundos" << endl;
+
+                if (compararMatrices(C, AUX, n)) {
+                    cout << "Las matrices son iguales" << endl;
+                } else {
+                    cout << "Las matrices son diferentes" << endl;
+                }
+            }
+            break;
+
+        case 5:
             // Cantidad de muestras a tomar
             for (int a = 0; a < muestras; a++) {
                 llenarMatricesRandom(A,B,C,n);
                 llenarMatricesRandom(A,B,AUX,n);
-                cout << "N: " << n << endl;
                 
                 auto inicio = high_resolution_clock::now();     // Tiempo inicial
                 
@@ -191,7 +289,7 @@ int main() {
             }
             break;
 
-        case 5:
+        case 6:
             // Cantidad de muestras a tomar
             for (int a = 0; a < muestras; a++) {
                 llenarMatricesRandom(A,B,C,n);
@@ -302,10 +400,18 @@ void DR1(byte **A, byte **B, int **C, int row, int col, int size) {
         C[row+1][col+1] += static_cast<int>(A[row+1][col]) * static_cast<int>(B[row][col+1]) + static_cast<int>(A[row+1][col+1]) * static_cast<int>(B[row+1][col+1]);
     } else {
         int newSize = size / 2;
-        DR1(A, B, C, row, col, newSize);
-        DR1(A, B, C, row, col + newSize, newSize);
-        DR1(A, B, C, row + newSize, col, newSize);
-        DR1(A, B, C, row + newSize, col + newSize, newSize);
+        for (int i = 0; i < newSize; i++) {
+            for (int j = 0; j < newSize; j++) {
+                DR1(A, B, C, row + i, col + j, newSize);
+                DR1(A, B, C, row + i, col + newSize + j, newSize);
+                DR1(A, B, C, row + newSize + i, col + j, newSize);
+                DR1(A, B, C, row + newSize + i, col + newSize + j, newSize);
+            }
+        }
+        // DR1(A, B, C, row, col, newSize);
+        // DR1(A, B, C, row, col + newSize, newSize);
+        // DR1(A, B, C, row + newSize, col, newSize);
+        // DR1(A, B, C, row + newSize, col + newSize, newSize);
     }
 }
 
