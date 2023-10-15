@@ -169,7 +169,7 @@ int main() {
 
             } while (rep != 0);
             
-            printf("\nTiempo promedio multiplicacion matrices [%d x %d] = {%.2f minutos}|{%f segundos}|{%f milisegundos}\n", sizeMatriz,sizeMatriz,(promedio/10)/60,promedio/10,(promedio/10)*1000);
+            printf("Tiempo promedio multiplicacion matrices [%d x %d] = {%.2f minutos}|{%f segundos}|{%f milisegundos}\n", sizeMatriz,sizeMatriz,(promedio/10)/60,promedio/10,(promedio/10)*1000);
             sizeMatriz = sizeMatriz*2;
             
         } while (sizeMatriz <= caso2);

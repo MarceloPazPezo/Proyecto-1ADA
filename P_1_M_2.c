@@ -158,7 +158,7 @@ int main() {
 
     do {
         double promedio = 0;
-        int rep = 1;
+        int rep = 5;
         int repint = rep;
 
         do {
@@ -234,7 +234,7 @@ int main() {
             free(Matriz2);
             free(Matriz3);
 
-            
+
             repint = repint - 1;
             promedio = promedio + tiempo;
 
@@ -244,7 +244,7 @@ int main() {
         guardarTiemposEnArchivo(promedio, "tiempos.txt", sizeMatriz);
         sizeMatriz = sizeMatriz * 2;
 
-    } while (sizeMatriz <= 1024);
+    } while (sizeMatriz <= 4096);
 
     return 0;
 }
