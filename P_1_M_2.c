@@ -10,36 +10,28 @@ void sumarMatrices(int **A, int **B, int **C, int n) {
     }
 }
 
-void restarMatrices(int **A, int **B, int **C, int n) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            C[i][j] = A[i][j] - B[i][j];
-        }
-    }
-}
-
-void multiplicarMatrices(int **A, int **B, int **C, int n) {
+void multiplicarMatrices(short **A, short **B, int **C, int n) {
     if (n == 1) {
         // Caso base: matrices de 1x1
-        C[0][0] = A[0][0] * B[0][0];
+        C[0][0] = (int)A[0][0] * B[0][0];
     } else {
         // Dividir las matrices en submatrices
         int m = n / 2;
 
         // Crear submatrices de A, B y C
-        int **A11, **A12, **A21, **A22;
-        int **B11, **B12, **B21, **B22;
+        short **A11, **A12, **A21, **A22;
+        short **B11, **B12, **B21, **B22;
         int **C11, **C12, **C21, **C22;
         int **Temp1, **Temp2;
 
-        A11 = (int **)malloc(m * sizeof(int *));
-        A12 = (int **)malloc(m * sizeof(int *));
-        A21 = (int **)malloc(m * sizeof(int *));
-        A22 = (int **)malloc(m * sizeof(int *));
-        B11 = (int **)malloc(m * sizeof(int *));
-        B12 = (int **)malloc(m * sizeof(int *));
-        B21 = (int **)malloc(m * sizeof(int *));
-        B22 = (int **)malloc(m * sizeof(int *));
+        A11 = (short **)malloc(m * sizeof(short *));
+        A12 = (short **)malloc(m * sizeof(short *));
+        A21 = (short **)malloc(m * sizeof(short *));
+        A22 = (short **)malloc(m * sizeof(short *));
+        B11 = (short **)malloc(m * sizeof(short *));
+        B12 = (short **)malloc(m * sizeof(short *));
+        B21 = (short **)malloc(m * sizeof(short *));
+        B22 = (short **)malloc(m * sizeof(short *));
         C11 = (int **)malloc(m * sizeof(int *));
         C12 = (int **)malloc(m * sizeof(int *));
         C21 = (int **)malloc(m * sizeof(int *));
@@ -48,14 +40,14 @@ void multiplicarMatrices(int **A, int **B, int **C, int n) {
         Temp2 = (int **)malloc(m * sizeof(int *));
 
         for (int i = 0; i < m; i++) {
-            A11[i] = (int *)malloc(m * sizeof(int));
-            A12[i] = (int *)malloc(m * sizeof(int));
-            A21[i] = (int *)malloc(m * sizeof(int));
-            A22[i] = (int *)malloc(m * sizeof(int));
-            B11[i] = (int *)malloc(m * sizeof(int));
-            B12[i] = (int *)malloc(m * sizeof(int));
-            B21[i] = (int *)malloc(m * sizeof(int));
-            B22[i] = (int *)malloc(m * sizeof(int));
+            A11[i] = (short *)malloc(m * sizeof(short));
+            A12[i] = (short *)malloc(m * sizeof(short));
+            A21[i] = (short *)malloc(m * sizeof(short));
+            A22[i] = (short *)malloc(m * sizeof(short));
+            B11[i] = (short *)malloc(m * sizeof(short));
+            B12[i] = (short *)malloc(m * sizeof(short));
+            B21[i] = (short *)malloc(m * sizeof(short));
+            B22[i] = (short *)malloc(m * sizeof(short));
             C11[i] = (int *)malloc(m * sizeof(int));
             C12[i] = (int *)malloc(m * sizeof(int));
             C21[i] = (int *)malloc(m * sizeof(int));
@@ -144,27 +136,39 @@ void multiplicarMatrices(int **A, int **B, int **C, int n) {
     }
 }
 
+void guardarTiemposEnArchivo(double tiempo, char* nombreArchivo,int sizeMatriz) {
+    FILE* archivo = fopen(nombreArchivo, "a");
+    if (archivo == NULL) {
+        printf("No se pudo abrir el archivo.\n");
+        return;
+    }
+    if (sizeMatriz == 32)
+    {
+        fprintf(archivo,"---------------------------------------\n");
+    }
+    fprintf(archivo, "Tiempo en segundos para matriz de %dx%d = {%.6f}\n", sizeMatriz, sizeMatriz, tiempo/10);
+    fclose(archivo);
+}
+
 int main() {
-    
     clock_t start, end;
     double tiempo;
+
     int sizeMatriz = 32;
 
-    do
-    {  
+    do {
         double promedio = 0;
-        int rep = 5;
+        int rep = 1;
+        int repint = rep;
 
-        // do
-        // {
-            
-            int **Matriz1 = (int **)malloc(sizeMatriz * sizeof(int *));
-            int **Matriz2 = (int **)malloc(sizeMatriz * sizeof(int *));
+        do {
+            short **Matriz1 = (short **)malloc(sizeMatriz * sizeof(short *));
+            short **Matriz2 = (short **)malloc(sizeMatriz * sizeof(short *));
             int **Matriz3 = (int **)malloc(sizeMatriz * sizeof(int *));
 
             for (int i = 0; i < sizeMatriz; i++) {
-                Matriz1[i] = (int *)malloc(sizeMatriz * sizeof(int));
-                Matriz2[i] = (int *)malloc(sizeMatriz * sizeof(int));
+                Matriz1[i] = (short *)malloc(sizeMatriz * sizeof(short));
+                Matriz2[i] = (short *)malloc(sizeMatriz * sizeof(short));
                 Matriz3[i] = (int *)malloc(sizeMatriz * sizeof(int));
             }
 
@@ -174,15 +178,51 @@ int main() {
                     Matriz1[i][j] = rand() % 128 + 0;
                     Matriz2[i][j] = rand() % 128 + 0;
                 }
+
             }
+
+            // int c = 0;
+            // for (int i = 0; i < sizeMatriz; i++) {
+            //     for (int j = 0; j < sizeMatriz; j++) {
+            //         printf("[%d]", Matriz1[i][j]);
+            //         c++;
+            //         if (c == sizeMatriz) {
+            //             printf("\n");
+            //             c = 0;
+            //         }
+            //     }
+            // }
+
+            // c = 0;
+            // for (int i = 0; i < sizeMatriz; i++) {
+            //     for (int j = 0; j < sizeMatriz; j++) {
+            //         printf("<%d>", Matriz2[i][j]);
+            //         c++;
+            //         if (c == sizeMatriz) {
+            //             printf("\n");
+            //             c = 0;
+            //         }
+            //     }
+            // }
 
             start = clock();
             // Multiplicar las matrices
             multiplicarMatrices(Matriz1, Matriz2, Matriz3, sizeMatriz);
             end = clock();
 
-            tiempo = ((double) (end - start)) / CLOCKS_PER_SEC;
-            
+            tiempo = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+            // c = 0;
+            // for (int i = 0; i < sizeMatriz; i++) {
+            //     for (int j = 0; j < sizeMatriz; j++) {
+            //         printf("{%d}", Matriz3[i][j]);
+            //         c++;
+            //         if (c == sizeMatriz) {
+            //             printf("\n");
+            //             c = 0;
+            //         }
+            //     }
+            // }
 
             // Liberar la memoria de las matrices
             for (int i = 0; i < sizeMatriz; i++) {
@@ -194,15 +234,17 @@ int main() {
             free(Matriz2);
             free(Matriz3);
 
-            rep = rep - 1;
+            
+            repint = repint - 1;
             promedio = promedio + tiempo;
 
-        //}while(rep != 0);
+        } while (repint != 0);
+        promedio = promedio / rep;
+        printf("Tiempo promedio multiplicacion matrices [%d x %d] = {%.2f minutos}|{%f segundos}|{%f milisegundos}\n", sizeMatriz, sizeMatriz, promedio / 60, promedio, promedio * 1000);
+        guardarTiemposEnArchivo(promedio, "tiempos.txt", sizeMatriz);
+        sizeMatriz = sizeMatriz * 2;
 
-        printf("Tiempo promedio multiplicacion matrices [%d x %d] = {%.2f minutos}|{%f segundos}|{%f milisegundos}\n", sizeMatriz,sizeMatriz,(promedio/10)/60,promedio/10,(promedio/10)*1000);
-        sizeMatriz = sizeMatriz*2;
-
-    }while(sizeMatriz <= 1024);
+    } while (sizeMatriz <= 1024);
 
     return 0;
 }
