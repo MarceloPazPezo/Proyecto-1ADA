@@ -176,28 +176,18 @@ int main() {
 
             }
 
-            // int c = 0;
             // for (int i = 0; i < sizeMatriz; i++) {
             //     for (int j = 0; j < sizeMatriz; j++) {
-            //         printf("[%d]", Matriz1[i][j]);
-            //         c++;
-            //         if (c == sizeMatriz) {
-            //             printf("\n");
-            //             c = 0;
-            //         }
+            //         printf("<%d>", Matriz1[i][j]);
             //     }
+            //     printf("\n");
             // }
 
-            // c = 0;
             // for (int i = 0; i < sizeMatriz; i++) {
             //     for (int j = 0; j < sizeMatriz; j++) {
-            //         printf("<%d>", Matriz2[i][j]);
-            //         c++;
-            //         if (c == sizeMatriz) {
-            //             printf("\n");
-            //             c = 0;
-            //         }
+            //         printf("[%d]", Matriz2[i][j]);
             //     }
+            //     printf("\n");
             // }
 
             start = clock();
@@ -207,16 +197,11 @@ int main() {
 
             tiempo = ((double)(end - start)) / CLOCKS_PER_SEC;
 
-            // c = 0;
             // for (int i = 0; i < sizeMatriz; i++) {
             //     for (int j = 0; j < sizeMatriz; j++) {
             //         printf("{%d}", Matriz3[i][j]);
-            //         c++;
-            //         if (c == sizeMatriz) {
-            //             printf("\n");
-            //             c = 0;
-            //         }
             //     }
+            //     printf("\n");
             // }
 
             // Liberar la memoria de las matrices
