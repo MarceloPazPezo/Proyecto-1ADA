@@ -1,80 +1,184 @@
 #include <iostream>
-#include <vector>
+#include <fstream>
 #include <ctime>
 #include <cstdlib>
-#include <fstream>
 
-// Función para multiplicar dos matrices
-std::vector<std::vector<int>> multiplyMatrices(const std::vector<std::vector<short>>& A, const std::vector<std::vector<short>>& B) {
-    int n = A.size();
-    int m = B.size();
-    int p = B[0].size();
-
-    std::vector<std::vector<int>> C(n, std::vector<int>(p, 0));
-
+void sumarMatrices(int **A, int **B, int **C, int n) {
     for (int i = 0; i < n; i++) {
-        for (int j = 0; j < p; j++) {
-            for (int k = 0; k < m; k++) {
-                C[i][j] += static_cast<int>(A[i][k]) * B[k][j];
-            }
+        for (int j = 0; j < n; j++) {
+            C[i][j] = A[i][j] + B[i][j];
         }
     }
-
-    return C;
 }
 
-// Función para guardar tiempos en un archivo
-void saveTimesToFile(double time, const std::string& fileName, int matrixSize) {
-    std::ofstream file(fileName, std::ios::app);
-    if (!file.is_open()) {
-        std::cerr << "No se pudo abrir el archivo." << std::endl;
+void multiplicarMatrices(short **A, short **B, int **C, int n) {
+    if (n == 1) {
+        // Caso base: matrices de 1x1
+        C[0][0] = static_cast<int>(A[0][0]) * B[0][0];
+    } else {
+        int m = n / 2;
+
+        short **A11 = new short *[m];
+        short **A12 = new short *[m];
+        short **A21 = new short *[m];
+        short **A22 = new short *[m];
+        short **B11 = new short *[m];
+        short **B12 = new short *[m];
+        short **B21 = new short *[m];
+        short **B22 = new short *[m];
+        int **C11 = new int *[m];
+        int **C12 = new int *[m];
+        int **C21 = new int *[m];
+        int **C22 = new int *[m];
+
+        for (int i = 0; i < m; i++) {
+            A11[i] = new short[m];
+            A12[i] = new short[m];
+            A21[i] = new short[m];
+            A22[i] = new short[m];
+            B11[i] = new short[m];
+            B12[i] = new short[m];
+            B21[i] = new short[m];
+            B22[i] = new short[m];
+            C11[i] = new int[m];
+            C12[i] = new int[m];
+            C21[i] = new int[m];
+            C22[i] = new int[m];
+        }
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < m; j++) {
+                A11[i][j] = A[i][j];
+                A12[i][j] = A[i][j + m];
+                A21[i][j] = A[i + m][j];
+                A22[i][j] = A[i + m][j + m];
+                B11[i][j] = B[i][j];
+                B12[i][j] = B[i][j + m];
+                B21[i][j] = B[i + m][j];
+                B22[i][j] = B[i + m][j + m];
+            }
+        }
+
+        int **Temp1 = new int *[m];
+        int **Temp2 = new int *[m];
+
+        for (int i = 0; i < m; i++) {
+            Temp1[i] = new int[m];
+            Temp2[i] = new int[m];
+        }
+
+        multiplicarMatrices(A11, B11, Temp1, m);
+        multiplicarMatrices(A12, B21, Temp2, m);
+        sumarMatrices(Temp1, Temp2, C11, m);
+
+        multiplicarMatrices(A11, B12, Temp1, m);
+        multiplicarMatrices(A12, B22, Temp2, m);
+        sumarMatrices(Temp1, Temp2, C12, m);
+
+        multiplicarMatrices(A21, B11, Temp1, m);
+        multiplicarMatrices(A22, B21, Temp2, m);
+        sumarMatrices(Temp1, Temp2, C21, m);
+
+        multiplicarMatrices(A21, B12, Temp1, m);
+        multiplicarMatrices(A22, B22, Temp2, m);
+        sumarMatrices(Temp1, Temp2, C22, m);
+
+        for (int i = 0; i < m; i++) {
+            delete[] A11[i];
+            delete[] A12[i];
+            delete[] A21[i];
+            delete[] A22[i];
+            delete[] B11[i];
+            delete[] B12[i];
+            delete[] B21[i];
+            delete[] B22[i];
+            delete[] C11[i];
+            delete[] C12[i];
+            delete[] C21[i];
+            delete[] C22[i];
+            delete[] Temp1[i];
+            delete[] Temp2[i];
+        }
+
+        delete[] A11;
+        delete[] A12;
+        delete[] A21;
+        delete[] A22;
+        delete[] B11;
+        delete[] B12;
+        delete[] B21;
+        delete[] B22;
+        delete[] C11;
+        delete[] C12;
+        delete[] C21;
+        delete[] C22;
+        delete[] Temp1;
+        delete[] Temp2;
+    }
+}
+
+void guardarTiemposEnArchivo(double tiempo, const char *nombreArchivo, int sizeMatriz) {
+    std::ofstream archivo(nombreArchivo, std::ios::app);
+    if (!archivo.is_open()) {
+        std::cout << "No se pudo abrir el archivo." << std::endl;
         return;
     }
-    if (matrixSize == 32) {
-        file << "---------------------------------------\n";
+    if (sizeMatriz == 32) {
+        archivo << "------------------------------------------\n";
     }
-    file << "Tiempo en segundos para matriz de " << matrixSize << "x" << matrixSize << ": " << time / 10 << std::endl;
-    file.close();
+
+    archivo << "Tiempo en segundos para matriz de " << sizeMatriz << "x" << sizeMatriz << " = " << (tiempo / 10) << std::endl;
+    archivo.close();
 }
 
 int main() {
-    srand(static_cast<unsigned>(time(0)));
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    int sizeMatriz = 32;
 
-    int matrixSize = 32;
+    do {
+        double promedio = 0;
 
-    while (matrixSize <= 4096) {
-        double averageTime = 0;
+        for (int rep = 0; rep < 10; rep++) {
+            short **Matriz1 = new short *[sizeMatriz];
+            short **Matriz2 = new short *[sizeMatriz];
+            int **Matriz3 = new int *[sizeMatriz];
 
-        for (int repetition = 0; repetition < 10; ++repetition) {
-            std::vector<std::vector<short>> matrix1(matrixSize, std::vector<short>(matrixSize));
-            std::vector<std::vector<short>> matrix2(matrixSize, std::vector<short>(matrixSize));
-            std::vector<std::vector<int>> resultMatrix(matrixSize, std::vector<int>(matrixSize));
+            for (int i = 0; i < sizeMatriz; i++) {
+                Matriz1[i] = new short[sizeMatriz];
+                Matriz2[i] = new short[sizeMatriz];
+                Matriz3[i] = new int[sizeMatriz];
+            }
 
-            // Inicializar matrix1 y matrix2 con valores aleatorios
-            for (int i = 0; i < matrixSize; i++) {
-                for (int j = 0; j < matrixSize; j++) {
-                    matrix1[i][j] = rand() % 128;
-                    matrix2[i][j] = rand() % 128;
+            for (int i = 0; i < sizeMatriz; i++) {
+                for (int j = 0; j < sizeMatriz; j++) {
+                    Matriz1[i][j] = static_cast<short>(std::rand() % 128 + 0);
+                    Matriz2[i][j] = static_cast<short>(std::rand() % 128 + 0);
                 }
             }
 
-            clock_t start = clock();
-            // Multiplicar las matrices
-            resultMatrix = multiplyMatrices(matrix1, matrix2);
-            clock_t end = clock();
+            std::clock_t start = std::clock();
+            multiplicarMatrices(Matriz1, Matriz2, Matriz3, sizeMatriz);
+            std::clock_t end = std::clock();
 
-            double time = static_cast<double>(end - start) / CLOCKS_PER_SEC;
-            averageTime += time;
+            double tiempo = static_cast<double>(end - start) / CLOCKS_PER_SEC;
 
-            // Liberar la memoria de las matrices (no es necesario en C++)
+            for (int i = 0; i < sizeMatriz; i++) {
+                delete[] Matriz1[i];
+                delete[] Matriz2[i];
+                delete[] Matriz3[i];
+            }
+            delete[] Matriz1;
+            delete[] Matriz2;
+            delete[] Matriz3;
+
+            promedio += tiempo;
         }
 
-        averageTime /= 1;
+        std::cout << "Tiempo promedio multiplicación matrices [" << sizeMatriz << "x" << sizeMatriz << "] = " << (promedio / 10) << " segundos" << std::endl;
+        guardarTiemposEnArchivo(promedio, "tiemposDR1C++.txt", sizeMatriz);
+        sizeMatriz *= 2;
 
-        std::cout << "Tiempo promedio multiplicacion de matrices [" << matrixSize << "x" << matrixSize << "]: " << averageTime << " segundos." << std::endl;
-        saveTimesToFile(averageTime, "tiempos.txt", matrixSize);
-        matrixSize *= 2;
-    }
+    } while (sizeMatriz <= 1024);
 
     return 0;
 }

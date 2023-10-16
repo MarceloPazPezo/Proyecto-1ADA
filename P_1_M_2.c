@@ -142,10 +142,6 @@ void guardarTiemposEnArchivo(double tiempo, char* nombreArchivo,int sizeMatriz) 
         printf("No se pudo abrir el archivo.\n");
         return;
     }
-    if (sizeMatriz == 32)
-    {
-        fprintf(archivo,"---------------------------------------\n");
-    }
     fprintf(archivo, "Tiempo en segundos para matriz de %dx%d = {%.6f}\n", sizeMatriz, sizeMatriz, tiempo/10);
     fclose(archivo);
 }
@@ -159,7 +155,6 @@ int main() {
     do {
         double promedio = 0;
         int rep = 1;
-        int repint = rep;
 
         do {
             short **Matriz1 = (short **)malloc(sizeMatriz * sizeof(short *));
@@ -234,17 +229,16 @@ int main() {
             free(Matriz2);
             free(Matriz3);
 
-            
-            repint = repint - 1;
+            rep = rep - 1;
             promedio = promedio + tiempo;
 
-        } while (repint != 0);
-        promedio = promedio / rep;
-        printf("Tiempo promedio multiplicacion matrices [%d x %d] = {%.2f minutos}|{%f segundos}|{%f milisegundos}\n", sizeMatriz, sizeMatriz, promedio / 60, promedio, promedio * 1000);
-        guardarTiemposEnArchivo(promedio, "tiempos.txt", sizeMatriz);
+        } while (rep != 0);
+
+        printf("Tiempo promedio multiplicacion matrices [%d x %d] = {%.2f minutos}|{%f segundos}|{%f milisegundos}\n", sizeMatriz, sizeMatriz, (promedio / 10) / 60, promedio / 10, (promedio / 10) * 1000);
+        guardarTiemposEnArchivo(promedio, "tiemposDR1C.txt", sizeMatriz);
         sizeMatriz = sizeMatriz * 2;
 
-    } while (sizeMatriz <= 1024);
+    } while (sizeMatriz <= 512);
 
     return 0;
 }
