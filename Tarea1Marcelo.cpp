@@ -20,9 +20,7 @@ int muestras = 1; // Cantidad de muestras a tomar
 // Prototipos de funciones que calculan la multiplicacion
 void AlgoritmoTradicional(byte **A, byte **B, int **C, int n);
 void AlgoritmoTradicionalALE(byte **A, byte **B, int **C, int size);
-void DR1(byte **A, byte **B, int **C, int row, int col, int size);
-void multiply_matrices(byte **a, byte **b, int **c, int row, int col, int size);
-void multiply_matrices1(byte **a, byte **b, int **c, int row, int col, int size);
+void DR1(byte **A, byte **B, int **C, int row1, int col1, int row2, int col2, int size);
 void strassen(int **matrixA, int **matrixB, int **matrixC, int n);
 
 // Prototipos extras
@@ -47,7 +45,7 @@ int main() {
     cout << ">>> ";
     cin >> n;
     cout << " " << endl;
-    cout << "Ingrese cantidad de muestras: " << endl;
+    cout << "Ingrese cantidad de muestras por cada potencia: " << endl;
     cout << ">>> ";
     cin >> muestras;
     cout << " " << endl;
@@ -66,14 +64,14 @@ int main() {
     byte **A = new byte*[n];
     byte **B = new byte*[n];
     int **C = new int*[n];
-    // int **AUX = new int*[n]; // Matriz para guardar resultados de forma auxiliar y poder comparar el resultado de 2 algoritmos
+    int **AUX = new int*[n]; // Matriz para guardar resultados de forma auxiliar y poder comparar el resultado de 2 algoritmos
 
     cout << "Ingrese el algoritmo que desea ejecutar: " << endl;
     cout << "1. Algoritmo Tradicional" << endl;
     cout << "2. DR1" << endl;
     cout << "3. DR2 (Strassen)" << endl;
     cout << "4. Compara matriz resultante tras multiplicar A x I = A" << endl;
-    // cout << "5. Compara matriz resultante tras multiplicar A x I = A" << endl;
+    cout << "5. Compara matriz resultante con otro algoritmo" << endl;
     cout << ">>> ";
     cin >> menu;
     cout << " " << endl;
@@ -201,7 +199,7 @@ int main() {
                 else if (opc1 == 2)
                 {
                     // multiply_matrices1(A, B, C, 0, 0, n);
-                    // DR1(A, B, C, 0, 0, n);
+                    DR1(A, B, C, 0, 0, 0, 0, n);
                     cout << "DR1" << endl;
                 }
                 else if (opc1 == 3)
@@ -271,6 +269,135 @@ int main() {
             }
             break;
 
+        case 5:
+            for (int a = 0; a < 1; a++) {
+                int opc1 = 0, opc2 = 0;
+                do {
+                    cout << "Que algoritmo desea comparar: " << endl;
+                    cout << "1. Algoritmo Tradicional" << endl;
+                    cout << "2. DR1" << endl;
+                    cout << "3. DR2" << endl;
+                    cout << "4. AT Ale" << endl;
+                    cout << "A1>>> ";
+                    cin >> opc1;
+                    cout << "A2>>> ";
+                    cin >> opc2;
+                    if (opc1 == opc2 || opc1 < 1 || opc1 > 4 || opc2 < 1 || opc2 > 4)
+                    {
+                        cout << "Opcion invalida" << endl;
+                    }
+                } while (opc1 == opc2 || opc1 < 1 || opc1 > 4 || opc2 < 1 || opc2 > 4);
+                cout << " " << endl;
+
+                cout << "N: " << n << endl;
+
+                int **Aaux = new int*[n];
+                int **Baux = new int*[n];
+                
+                llenarMatricesRandomByte(A,B,C,n);
+                llenarMatricesRandomByte(A,B,AUX,n);
+
+                // if (opc1 == 3 || opc2 == 3)
+                // {
+                //     for (int i = 0; i < n; i++)
+                //     {
+                //         Aaux[i] = new int[n];
+                //         Baux[i] = new int[n];
+                //         for (int j = 0; j < n; j++)
+                //         {
+                //             Aaux[i][j] = static_cast<int>(A[i][j]);
+                //             Baux[i][j] = static_cast<int>(B[i][j]);
+                //         }
+                //     }
+                // }
+                // else
+                // {
+                //     for (int i = 0; i < n; i++)
+                //     {
+                //         delete[] Aaux[i];
+                //         delete[] Baux[i];
+                //     }
+                //     delete[] Aaux;
+                //     delete[] Baux;
+                // }
+
+                
+
+                auto inicio = high_resolution_clock::now();     // Tiempo inicial
+
+                if (opc1 == 1)
+                {
+                    AlgoritmoTradicional(A, B, C, n);
+                    cout << "Algoritmo Tradicional" << endl;
+                }
+                else if (opc1 == 2)
+                {
+                    DR1(A, B, C, 0, 0, 0, 0, n);
+                    cout << "DR1" << endl;
+                }
+                else if (opc1 == 3)
+                {
+                    strassen(Aaux,Baux,C,n);
+                    cout << "DR2" << endl;
+                }
+                else if (opc1 == 4)
+                {
+                    AlgoritmoTradicionalALE(A, B, C, n);
+                    cout << "AT Ale" << endl;
+                }
+
+                auto fin = high_resolution_clock::now();    // Tiempo final
+                
+                
+                fin = high_resolution_clock::now();    // Tiempo final
+
+                // Calcular tiempo y transformarlo a minutos, segundos y nanosegundos
+                long long nanosegundos = duration_cast<nanoseconds>(fin - inicio).count();
+
+                long long segundos = duration_cast<seconds>(nanoseconds(nanosegundos)).count();
+                nanosegundos -= static_cast<long long>(segundos) * static_cast<long long>(1e9);
+                cout << "Tiempo: " << segundos << " segundos y " << nanosegundos << " nanosegundos" << endl;
+                
+                inicio = high_resolution_clock::now();     // Tiempo inicial
+
+                if (opc2 == 1)
+                {
+                    AlgoritmoTradicional(A, B, AUX, n);
+                    cout << "Algoritmo Tradicional" << endl;
+                }
+                else if (opc2 == 2)
+                {
+                    DR1(A, B, AUX, 0, 0, 0, 0, n);
+                    cout << "DR1" << endl;
+                }
+                else if (opc2 == 3)
+                {
+                    strassen(Aaux,Baux,AUX,n);
+                    cout << "DR2" << endl;
+                }
+                else if (opc2 == 4)
+                {
+                    AlgoritmoTradicionalALE(A, B, AUX, n);
+                    cout << "AT Ale" << endl;
+                }
+
+                fin = high_resolution_clock::now();    // Tiempo final
+
+                // Calcular tiempo y transformarlo a minutos, segundos y nanosegundos
+                nanosegundos = duration_cast<nanoseconds>(fin - inicio).count();
+
+                segundos = duration_cast<seconds>(nanoseconds(nanosegundos)).count();
+                nanosegundos -= static_cast<long long>(segundos) * static_cast<long long>(1e9);
+                cout << "Tiempo: " << segundos << " segundos y " << nanosegundos << " nanosegundos" << endl;
+
+                if (compararMatrices(C, AUX, n)) {
+                    cout << "Las matrices son iguales" << endl;
+                } else {
+                    cout << "Las matrices son diferentes" << endl;
+                }
+            }
+            break;
+            
         default:
             break;
     }
@@ -288,7 +415,7 @@ void calcularTiempoYGuardar(time_point<high_resolution_clock> inicio, time_point
     cout << "Una matriz de " << size << "x" << size << " se demora " << segundos << " segundos y " << nanosegundos << " nanosegundos con el Algoritmo " << algoritmo << endl;
     if (guardar == true)
     {
-        ofstream archivo("Tiempos.txt", ios::app);
+        ofstream archivo("TiemposAT.txt", ios::app);
         if (archivo.is_open()) {
             archivo << size << "," << segundos << "," << nanosegundos << "," << algoritmo << endl;
             archivo.close();
@@ -394,81 +521,25 @@ void AlgoritmoTradicionalALE(byte **A, byte **B, int **C, int size) {
  * @param tamaño El "tamaño" del parámetro representa el tamaño de las matrices.Indica el número de
  * Filas y columnas en las matrices "A", "B" y "C".
  */
-void DR1(byte **A, byte **B, int **C, int row, int col, int size) {
+void DR1(byte **A, byte **B, int **C, int row1, int col1, int row2, int col2, int size) {
     if (size == 2) {
-        C[row][col] += static_cast<int>(A[row][col]) * static_cast<int>(B[row][col]) + static_cast<int>(A[row][col+1]) * static_cast<int>(B[row+1][col]);
-        C[row][col+1] += static_cast<int>(A[row][col]) * static_cast<int>(B[row][col+1]) + static_cast<int>(A[row][col+1]) * static_cast<int>(B[row+1][col+1]);
-        C[row+1][col] += static_cast<int>(A[row+1][col]) * static_cast<int>(B[row][col]) + static_cast<int>(A[row+1][col+1]) * static_cast<int>(B[row+1][col]);
-        C[row+1][col+1] += static_cast<int>(A[row+1][col]) * static_cast<int>(B[row][col+1]) + static_cast<int>(A[row+1][col+1]) * static_cast<int>(B[row+1][col+1]);
+        C[row1][col1] = static_cast<int>(A[row1][col1]) * static_cast<int>(B[row2][col2]) + static_cast<int>(A[row1][col1+1]) * static_cast<int>(B[row2+1][col2]);
+        C[row1][col1+1] = static_cast<int>(A[row1][col1]) * static_cast<int>(B[row2][col2+1]) + static_cast<int>(A[row1][col1+1]) * static_cast<int>(B[row2+1][col2+1]);
+        C[row1+1][col1] = static_cast<int>(A[row1+1][col1]) * static_cast<int>(B[row2][col2]) + static_cast<int>(A[row1+1][col1+1]) * static_cast<int>(B[row2+1][col2]);
+        C[row1+1][col1+1] = static_cast<int>(A[row1+1][col1]) * static_cast<int>(B[row2][col2+1]) + static_cast<int>(A[row1+1][col1+1]) * static_cast<int>(B[row2+1][col2+1]);
     } else {
         int newSize = size / 2;
-        DR1(A, B, C, row, col, newSize);
-        DR1(A, B, C, row, col + newSize, newSize);
-        DR1(A, B, C, row + newSize, col, newSize);
-        DR1(A, B, C, row + newSize, col + newSize, newSize);
-        
-        // for (int i = 0; i < newSize; i++) {
-        //     for (int j = 0; j < newSize; j++) {
-        //         C[row + i][col + j] += C[row + i][col + j + newSize] + C[row + i + newSize][col + j] + C[row + i + newSize][col + j + newSize];
-        //     }
-        // }
+        DR1(A, B, C, row1, col1, row2, col2, newSize);
+        DR1(A, B, C, row1, col1 + newSize, row2, col2, newSize);
+        DR1(A, B, C, row1, col1, row2 + newSize, col2 + newSize, newSize);
+        DR1(A, B, C, row1, col1 + newSize, row2 + newSize, col2 + newSize, newSize);
+        DR1(A, B, C, row1 + newSize, col1, row2, col2, newSize);
+        DR1(A, B, C, row1 + newSize, col1 + newSize, row2, col2, newSize);
+        DR1(A, B, C, row1 + newSize, col1, row2 + newSize, col2 + newSize, newSize);
+        DR1(A, B, C, row1 + newSize, col1 + newSize, row2 + newSize, col2 + newSize, newSize);
+
     }
 }
-
-// void multiply_matrices(byte **a, byte **b, int **c, int row, int col, int size) {
-//     if (size == 1) {
-//         c[row][col] += static_cast<int>(a[row][row]) * static_cast<int>(b[row][col]);
-//     } else {
-//         int newSize = size / 2;
-//         // Multiplicar las submatrices superiores izquierdas
-//         multiply_matrices(a, b, c, row, col, newSize);
-//         // Multiplicar las submatrices superiores derechas
-//         multiply_matrices(a, b, c, row, col + newSize, newSize);
-//         // Multiplicar las submatrices inferiores izquierdas
-//         multiply_matrices(a, b, c, row + newSize, col, newSize);
-//         // Multiplicar las submatrices inferiores derechas
-//         multiply_matrices(a, b, c, row + newSize, col + newSize, newSize);
-//         // Combinar las submatrices para obtener la matriz resultante
-//         for (int i = 0; i < newSize; i++) {
-//             for (int j = 0; j < newSize; j++) {
-//                 c[row + i][col + j] += c[row + i][col + j + newSize] + c[row + i + newSize][col + j] + c[row + i + newSize][col + j + newSize];
-//             }
-//         }
-//     }
-// }
-
-// void multiply_matrices1(byte **a, byte **b, int **c, int row, int col, int size) {
-//     if (size == 2) {
-//         int a11 = static_cast<int>(a[row][col]);
-//         int a12 = static_cast<int>(a[row][col + 1]);
-//         int a21 = static_cast<int>(a[row + 1][col]);
-//         int a22 = static_cast<int>(a[row + 1][col + 1]);
-//         int b11 = static_cast<int>(b[row][col]);
-//         int b12 = static_cast<int>(b[row][col + 1]);
-//         int b21 = static_cast<int>(b[row + 1][col]);
-//         int b22 = static_cast<int>(b[row + 1][col + 1]);
-//         c[row][col] += a11 * b11 + a12 * b21;
-//         c[row][col + 1] += a11 * b12 + a12 * b22;
-//         c[row + 1][col] += a21 * b11 + a22 * b21;
-//         c[row + 1][col + 1] += a21 * b12 + a22 * b22;
-//     } else {
-//         int newSize = size / 2;
-//         // Multiplicar las submatrices superiores izquierdas
-//         multiply_matrices(a, b, c, row, col, newSize);
-//         // Multiplicar las submatrices superiores derechas
-//         multiply_matrices(a, b, c, row, col + newSize, newSize);
-//         // Multiplicar las submatrices inferiores izquierdas
-//         multiply_matrices(a, b, c, row + newSize, col, newSize);
-//         // Multiplicar las submatrices inferiores derechas
-//         multiply_matrices(a, b, c, row + newSize, col + newSize, newSize);
-//         //Combinar las submatrices para obtener la matriz resultante
-//         for (int i = 0; i < newSize; i++) {
-//             for (int j = 0; j < newSize; j++) {
-//                 c[row + i][col + j] += c[row + i][col + j + newSize] + c[row + i + newSize][col + j] + c[row + i + newSize][col + j + newSize];
-//             }
-//         }
-//     }
-// }
 
 void mostrarMatrizByte(byte **M, int size) {
     for (int i = 0; i < size; i++) {
@@ -543,43 +614,14 @@ void strassen(int **matrixA, int **matrixB, int **matrixC, int n) {
     //     matrixC[0][0] = matrixA[0][0] * matrixB[0][0];
     
     // } 
-    // else if (n == 2)
-    // {
-    //     int p1 = matrixA[0][0] * (matrixB[0][1] - matrixB[1][1]);
-    //     int p2 = (matrixA[0][0] + matrixA[0][1]) * matrixB[1][1];
-    //     int p3 = (matrixA[1][0] + matrixA[1][1]) * matrixB[0][0];
-    //     int p4 = matrixA[1][1] * (matrixB[1][0] - matrixB[0][0]);
-    //     int p5 = (matrixA[0][0] + matrixA[1][1]) * (matrixB[0][0] + matrixB[1][1]);
-    //     int p6 = (matrixA[0][1] - matrixA[1][1]) * (matrixB[1][0] + matrixB[1][1]);
-    //     int p7 = (matrixA[0][0] - matrixA[1][0]) * (matrixB[0][0] + matrixB[0][1]);
-    //     matrixC[0][0] = p5 + p4 - p2 + p6;
-    //     matrixC[0][1] = p1 + p2;
-    //     matrixC[1][0] = p3 + p4;
-    //     matrixC[1][1] = p5 + p1 - p3 - p7;
-    // }
-    // else if (n == 16)
-    // {
-    // // Algoritmo de multiplicación de matrices estándar para n == 16
-    //     for (int i = 0; i < 16; i++)
-    //     {
-    //         for (int j = 0; j < 16; j++)
-    //         {
-    //             matrixC[i][j] = 0;
-    //             for (int k = 0; k < 16; k++)
-    //             {
-    //                 matrixC[i][j] += matrixA[i][k] * matrixB[k][j];
-    //             }
-    //         }
-    //     }
-    // }
-    if (n == 2)
+    if (n == 32)
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 32; i++)
         {
-            for (int j = 0; j < 2; j++)
+            for (int j = 0; j < 32; j++)
             {
                 matrixC[i][j] = 0;
-                for (int k = 0; k < 2; k++)
+                for (int k = 0; k < 32; k++)
                 {
                     matrixC[i][j] += matrixA[i][k] * matrixB[k][j];
                 }
